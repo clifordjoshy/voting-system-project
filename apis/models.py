@@ -25,7 +25,7 @@ users_schema = UsersSchema()
 class Question(db.Model):
     question_id = db.Column(db.Integer, primary_key = True)
     question_text = db.Column(db.String(100))
-    question_author = db.Column(db.String(100))
+    question_author = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     deadline = db.Column(db.DateTime)
 
     def __init__(self, text, author, deadline):

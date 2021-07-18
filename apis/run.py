@@ -112,7 +112,9 @@ def question(id):
 @jwt_required()
 def question_admin(id):
     ques = Question.query.filter_by(question_id=id).first()
-    if ques.question_author == get_jwt_identity():
+    print(type(ques.question_author))
+    print(type(Users.query.filter_by(username=get_jwt_identity()).first().user_id))
+    if ques.question_author == Users.query.filter_by(username=get_jwt_identity()).first().user_id:
         if request.method == 'POST':
             ques.question_text = request.json['question_text']
             ques.question_author = request.json['question_author']
