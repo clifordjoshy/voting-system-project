@@ -10,7 +10,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from main import *
 from models import (Choice, Question, Users, choices_schema, question_schema,
-                    questions_schema, users_schema)
+                    questions_schema, users_schema, choices_admin_schema)
 
 
 @app.route('/register', methods=['POST'])
@@ -54,7 +54,6 @@ def user_login():
         return jsonify({"message": "Incorrect username or password"})
 
 @app.route("/polls", methods=['GET'])
-# @jwt_required()
 def index():
     polls = Question.query.all()
     polls = questions_schema.dump(polls)
@@ -96,6 +95,26 @@ def question(id):
         choices = Choice.query.filter_by(question=id).all()
         ques = question_schema.dump(ques)
         choices = choices_schema.dump(choices)
+        print(ques)
+        print(choices)
+        return jsonify({"question":ques, "choices":choices})
+
+@app.route("/<id>/admin", methods=['POST', 'GET'])
+@jwt_required()
+def question_admin(id):
+    if request.method == 'POST':
+        ques = Question.query.filter_by(question_id=id).first()
+        ques.question_text = request.json['question_text']
+        ques.question_author = request.json['question_author']
+        ques.deadline = request.json['deadline']
+        db.session.commit()
+        return jsonify({"msg":"updated"})
+
+    else:
+        ques = Question.query.filter_by(question_id=id).first()
+        choices = Choice.query.filter_by(question=id).all()
+        ques = question_schema.dump(ques)
+        choices = choices_admin_schema.dump(choices)
         print(ques)
         print(choices)
         return jsonify({"question":ques, "choices":choices})
