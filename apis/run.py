@@ -53,11 +53,11 @@ def user_login():
     else:
         return jsonify({"message": "Incorrect username or password"})
 
-@app.route("/polls", methods=['GET'])
+@app.route("/all_questions", methods=['GET'])
 def index():
     polls = Question.query.all()
     polls = questions_schema.dump(polls)
-    return jsonify({"polls":polls})
+    return jsonify({"all_questions":polls})
 
 @app.route("/create_question", methods=['POST'])
 @jwt_required()
@@ -111,22 +111,24 @@ def question(id):
 @app.route("/<id>/admin", methods=['POST', 'GET'])
 @jwt_required()
 def question_admin(id):
-    if request.method == 'POST':
-        ques = Question.query.filter_by(question_id=id).first()
-        ques.question_text = request.json['question_text']
-        ques.question_author = request.json['question_author']
-        ques.deadline = request.json['deadline']
-        db.session.commit()
-        return jsonify({"msg":"updated"})
+    ques = Question.query.filter_by(question_id=id).first()
+    if ques.question_author == get_jwt_identity():
+        if request.method == 'POST':
+            ques.question_text = request.json['question_text']
+            ques.question_author = request.json['question_author']
+            ques.deadline = request.json['deadline']
+            db.session.commit()
+            return jsonify({"msg":"updated"})
 
+        else:
+            choices = Choice.query.filter_by(question=id).all()
+            ques = question_schema.dump(ques)
+            choices = choices_admin_schema.dump(choices)
+            print(ques)
+            print(choices)
+            return jsonify({"question":ques, "choices":choices})
     else:
-        ques = Question.query.filter_by(question_id=id).first()
-        choices = Choice.query.filter_by(question=id).all()
-        ques = question_schema.dump(ques)
-        choices = choices_admin_schema.dump(choices)
-        print(ques)
-        print(choices)
-        return jsonify({"question":ques, "choices":choices})
+        return jsonify({"msg":"This question was posted by a different user."})
 
 
 if __name__ == "__main__":
