@@ -1,14 +1,16 @@
-from flask import Flask, request, session, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-from flask_cors import CORS
-from werkzeug.security import generate_password_hash, check_password_hash
-from models import Users, users_schema, Question, question_schema, questions_schema, Choice, choices_schema
-from main import *
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
 import datetime
+
+from flask import Flask, jsonify, request, session
+from flask_cors import CORS
+from flask_jwt_extended import (create_access_token, get_jwt_identity,
+                                jwt_required)
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from main import *
+from models import (Choice, Question, Users, choices_schema, question_schema,
+                    questions_schema, users_schema)
 
 
 @app.route('/register', methods=['POST'])
@@ -56,14 +58,14 @@ def user_login():
 def index():
     polls = Question.query.all()
     polls = questions_schema.dump(polls)
-    return polls
+    return jsonify({"polls":polls})
 
 @app.route("/create_question", methods=['POST'])
 @jwt_required()
 def create_question():
     question_text = request.json['question_text']
     question_author = request.json['question_author']
-    deadline = datetime.datetime.now()
+    deadline = request.json['deadline']
     
     ques = Question(question_text, question_author, deadline)
     db.session.add(ques)
@@ -72,13 +74,31 @@ def create_question():
 
 @app.route("/<id>/add_choice", methods=['POST'])
 @jwt_required(id)
-def add_choice():
+def add_choice(id):
     choice_text = request.json['choice_text']
     
     choice = Choice(choice_text, id)
     db.session.add(choice)
     db.session.commit()
     return jsonify({"choice_id":f"{choice.choice_id}"})
+
+@app.route("/<id>", methods=['POST','GET'])
+def question(id):
+    if request.method == 'POST':
+        voted_choice = request.json['choice_id']
+        choice = Choice.query.filter_by(choice_id=voted_choice).first()
+        choice.votes = choice.votes + 1
+        db.session.commit()
+        return jsonify({"voted for choice_id":f"{choice.choice_id}"})
+
+    else:
+        ques = Question.query.filter_by(question_id=id).first()
+        choices = Choice.query.filter_by(question=id).all()
+        ques = question_schema.dump(ques)
+        choices = choices_schema.dump(choices)
+        print(ques)
+        print(choices)
+        return jsonify({"question":ques, "choices":choices})
 
 
 if __name__ == "__main__":

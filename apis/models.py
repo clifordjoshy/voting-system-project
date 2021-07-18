@@ -55,7 +55,11 @@ class ChoiceSchema(ma.Schema):
     class Meta:
         fields = ('choice_id', 'choice_text', 'question')
 
-choices_schema = ChoiceSchema(many=True)
+class ChoiceAdminSchema(ma.Schema):
+    class Meta:
+        fields = ('choice_id', 'choice_text', 'question', 'votes')
+
+choices_admin_schema = ChoiceAdminSchema(many=True)
 
 if __name__ == "__main__":
     db.create_all()
