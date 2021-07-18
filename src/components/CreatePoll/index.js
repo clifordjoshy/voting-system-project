@@ -19,7 +19,6 @@ const CreatePoll = () => {
     await new Promise((r) => setTimeout(r, 2000));
     if (true) {
       setPostCreated("1");
-      console.log("post dcreated");
     }
   }, []);
 
