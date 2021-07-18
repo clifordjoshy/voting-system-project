@@ -81,6 +81,15 @@ def add_choice(id):
     db.session.commit()
     return jsonify({"choice_id":f"{choice.choice_id}"})
 
+@app.route("/<id>/delete_choice", methods=['POST'])
+@jwt_required(id)
+def delete_choice(id):   
+    choice_id = request.json['choice_id']
+    choice = Choice.query.filter_by(choice_id=choice_id).first()
+    db.session.delete(choice)
+    db.session.commit()
+    return jsonify({"deleted choice_id":f"{choice.choice_id}"})
+
 @app.route("/<id>", methods=['POST','GET'])
 def question(id):
     if request.method == 'POST':
