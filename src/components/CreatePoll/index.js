@@ -3,11 +3,21 @@ import { AppContext } from "../../App";
 import axios from "axios";
 import PostCreated from "./PostCreated";
 import PostForm from "./PostForm";
+import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 const CreatePoll = () => {
   const { userToken } = useContext(AppContext);
 
   const [postCreated, setPostCreated] = useState(null);
+
+  const history = useHistory();
+  useEffect(() => {
+    if (!userToken) {
+      //redirect to home page if no auth
+      history.push("/");
+    }
+  }, [userToken]);
 
   const handleSubmit = useCallback(async (question, options, deadline) => {
     // axios

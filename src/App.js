@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
+import EditPoll from "./components/EditPoll";
 
 export const AppContext = createContext();
 
@@ -43,6 +44,10 @@ function App() {
           <Route path="/admin/polls/:pollId">
             <BaseNav />
             <ViewPollAdmin />
+          </Route>
+          <Route path="/admin/edit/:pollId">
+            <BaseNav />
+            <EditPoll />
           </Route>
           <Route exact path="/admin/create">
             <BaseNav />
