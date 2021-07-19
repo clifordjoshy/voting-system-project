@@ -17,7 +17,7 @@ const CreatePoll = () => {
       //redirect to home page if no auth
       history.push("/");
     }
-  }, [userToken]);
+  }, [userToken, history]);
 
   const handleSubmit = useCallback(async (question, options, deadline) => {
     // axios

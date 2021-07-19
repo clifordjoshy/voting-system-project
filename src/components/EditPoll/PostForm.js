@@ -18,7 +18,7 @@ const PostForm = ({ submitData, questionData }) => {
       setErrors({ ...errors, optionCount: false });
       setOptions(options.concat(""));
     },
-    [options, setOptions]
+    [options, setOptions, errors, setErrors]
   );
 
   const updateOption = useCallback(
@@ -39,7 +39,7 @@ const PostForm = ({ submitData, questionData }) => {
       //reset option errors
       setErrors({ ...errors, options: [] });
     },
-    [options, setOptions]
+    [options, setOptions, errors, setErrors]
   );
 
   const handleSubmit = useCallback(() => {
@@ -59,7 +59,7 @@ const PostForm = ({ submitData, questionData }) => {
     submitData(question, options, deadline).then(() => {
       setLoading(false);
     });
-  }, [question, options, deadline]);
+  }, [question, options, deadline, submitData]);
 
   return (
     <Card body className="p-2" style={{ minWidth: "50%" }}>

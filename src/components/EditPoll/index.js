@@ -24,7 +24,7 @@ const EditPoll = () => {
     axios
       .get(process.env.REACT_APP_BACKEND_URL + pollId + "/admin", { headers: { Authorization: `Bearer ${userToken}` } })
       .then((res) => setQuestionData(res.data));
-  }, [userToken, pollId]);
+  }, [userToken, pollId, history]);
 
   const [postEdited, setPostEdited] = useState(false);
 
