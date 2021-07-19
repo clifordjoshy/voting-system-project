@@ -4,9 +4,10 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
-import { useContext, useState } from "react";
+import { useContext, useState, useCallback } from "react";
 import { AppContext } from "../../App";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import background from "./background.jpg";
 
 const HomePage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -52,26 +53,55 @@ const HomePage = () => {
     );
   }
 
+  const history = useHistory();
+
+  const getStarted = useCallback(() => {
+    if (!userToken) {
+      setShowRegisterModal(true);
+    } else {
+      history.push("/admin/create");
+    }
+  }, [userToken, history]);
+
   return (
     <>
-      <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark" className="bg-transparent">
-        <Container>
-          <Navbar.Brand style={{ cursor: "pointer" }}>
-            <b>Votey</b>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto" />
-            <Nav>{navOptions}</Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      {!userToken && (
-        <>
-          <LoginModal show={showLoginModal} onHide={() => setShowLoginModal(false)} />
-          <RegisterModal show={showRegisterModal} onHide={() => setShowRegisterModal(false)} />
-        </>
-      )}
+      <div
+        className="vh-100 vw-100 position-absolute top-0 start-0"
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          zIndex: "-1",
+        }}
+      >
+        <div className="w-100 h-100" style={{ backgroundColor: "#120f3df5" }} />
+      </div>
+      <div className="d-flex vh-100 flex-column">
+        <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark" className="bg-transparent">
+          <Container>
+            <Navbar.Brand style={{ cursor: "pointer" }}>
+              <b>Votey</b>
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="me-auto" />
+              <Nav>{navOptions}</Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+        {!userToken && (
+          <>
+            <LoginModal show={showLoginModal} onHide={() => setShowLoginModal(false)} />
+            <RegisterModal show={showRegisterModal} onHide={() => setShowRegisterModal(false)} />
+          </>
+        )}
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1 text-white">
+          <h1>Polls. Simplified.</h1>
+          <br />
+          <Button variant="success" onClick={getStarted}>
+            <h3 style={{ padding: "5px 15px" }}>Get Started</h3>
+          </Button>
+        </div>
+      </div>
     </>
   );
 };
