@@ -1,0 +1,11 @@
+.collapse-question {
+  display: grid;
+  grid-template-columns: minmax(250px, 500px) auto;
+}
+
+@media screen and (max-width: 500px) {
+  .collapse-question {
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: auto;
+  }
+}

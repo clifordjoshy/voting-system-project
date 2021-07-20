@@ -28,7 +28,7 @@ const MyPolls = () => {
         { id: 9, question: "What is the meaning of life?qqsdsddsdvddvsefeesefefesdgedvdsvdvwsdfdfd", deadline: new Date() },
       ]);
     });
-  }, [userToken]);
+  }, [userToken, history]);
 
   return (
     <div>
