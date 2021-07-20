@@ -3,35 +3,17 @@ import Card from "react-bootstrap/Card";
 
 const ResultGraph = ({ results }) => {
   const colors = [
-    "#3366cc",
-    "#dc3912",
-    "#ff9900",
-    "#109618",
-    "#990099",
-    "#0099c6",
-    "#dd4477",
-    "#66aa00",
-    "#b82e2e",
-    "#316395",
-    "#994499",
-    "#22aa99",
-    "#aaaa11",
-    "#6633cc",
-    "#e67300",
-    "#8b0707",
-    "#651067",
-    "#329262",
-    "#5574a6",
-    "#3b3eac",
-    "#b77322",
+    "#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", 
+    "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", 
+    "#5574a6", "#3b3eac", "#b77322",
   ];
 
   const data = {
-    labels: results.map((_, i) => `Option ${i + 1}`),
+    labels: results?.map((_, i) => `Option ${i + 1}`) || [],
     datasets: [
       {
         label: "# of votes",
-        data: results.map((_, i) => i * 5),
+        data: results?.map(({votes}) => votes) || [1, 1, 1, 1],
         backgroundColor: colors,
       },
     ],
