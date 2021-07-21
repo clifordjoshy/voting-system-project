@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 jwt_required)
@@ -15,11 +15,14 @@ from models import (Choice, Question, Users, choices_schema, question_schema,
 
 @app.route('/register', methods=['POST'])
 def user_register():
-    username = request.json['username']
-    email = request.json['email']
-    password = request.json['password']
-    hashed_password = generate_password_hash(password, method='sha256')
-    confirmpassword = request.json['confirmpassword']
+    try:
+        username = request.json['username']
+        email = request.json['email']
+        password = request.json['password']
+        hashed_password = generate_password_hash(password, method='sha256')
+        confirmpassword = request.json['confirmpassword']
+    except KeyError:
+        return jsonify({"msg":"One or more fields are empty."})
 
     user = Users.query.filter_by(username=username).first()
     useremail = Users.query.filter_by(email=email).first()
@@ -42,8 +45,11 @@ def user_register():
 
 @app.route("/login", methods=["POST"])
 def user_login():
-    username = request.json['username']
-    password = request.json['password']
+    try:
+        username = request.json['username']
+        password = request.json['password']
+    except KeyError:
+        return jsonify({"msg":"One or more fields are empty."})
 
     user = Users.query.filter_by(username=username).first()
     
