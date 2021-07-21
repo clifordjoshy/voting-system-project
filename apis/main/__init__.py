@@ -20,6 +20,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{basedir}/dev.db"
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+app.config["JWT_SECRET_KEY"] = "super-super-secret"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=24)
 jwt = JWTManager(app)
-JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=30)
