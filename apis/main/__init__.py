@@ -3,11 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 import os
+import datetime
 
 basedir = os.getcwd()
 
@@ -24,3 +22,4 @@ ma = Marshmallow(app)
 
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 jwt = JWTManager(app)
+JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=30)

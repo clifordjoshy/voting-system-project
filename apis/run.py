@@ -59,16 +59,27 @@ def index():
     polls = questions_schema.dump(polls)
     return jsonify({"all_questions":polls})
 
+@app.route("/questions", methods=['GET'])
+def user_questions():
+    user = Users.query.filter_by(username=get_jwt_identity()).first().user_id
+    polls = Questions.query.filter_by(question_author=user)
+    return jsonify({"user's questions":polls})
+
 @app.route("/create_question", methods=['POST'])
 @jwt_required()
 def create_question():
     question_text = request.json['question_text']
     question_author = Users.query.filter_by(username=get_jwt_identity()).first().user_id
     deadline = datetime.datetime.strptime(request.json['deadline'], '%Y-%m-%dT%H:%M:%S.%fZ')
+    choices = request.json['choices']
     
     ques = Question(question_text, question_author, deadline)
     db.session.add(ques)
     db.session.commit()
+    for choice_text in choices:
+        choice = Choice(choice_text, ques.question_id)
+        db.session.add(choice)
+        db.session.commit()
     return jsonify({"question_id":f"{ques.question_id}"})
 
 @app.route("/<id>/add_choice", methods=['POST'])
@@ -90,6 +101,7 @@ def delete_choice(id):
     db.session.commit()
     return jsonify({"deleted choice_id":f"{choice.choice_id}"})
 
+#post:vote, get:info
 @app.route("/<id>", methods=['POST','GET'])
 def question(id):
     if request.method == 'POST':
@@ -108,18 +120,22 @@ def question(id):
         print(choices)
         return jsonify({"question":ques, "choices":choices})
 
+#post:update, get:vote count
 @app.route("/<id>/admin", methods=['POST', 'GET'])
 @jwt_required()
 def question_admin(id):
     ques = Question.query.filter_by(question_id=id).first()
-    print(type(ques.question_author))
-    print(type(Users.query.filter_by(username=get_jwt_identity()).first().user_id))
     if ques.question_author == Users.query.filter_by(username=get_jwt_identity()).first().user_id:
         if request.method == 'POST':
             ques.question_text = request.json['question_text']
             ques.question_author = request.json['question_author']
             ques.deadline = request.json['deadline']
+            choices = request.json['choices']
             db.session.commit()
+            for choice_text in choices:
+                choice = Choice(choice_text, ques.question_id)
+                db.session.add(choice)
+                db.session.commit()
             return jsonify({"msg":"updated"})
 
         else:
