@@ -1,11 +1,8 @@
 import datetime
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import jsonify, request
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 jwt_required)
-from flask_marshmallow import Marshmallow
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from main import *

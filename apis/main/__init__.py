@@ -1,8 +1,7 @@
-from flask import Flask, request, session, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager
 import os
 import datetime
