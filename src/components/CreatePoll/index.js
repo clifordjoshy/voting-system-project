@@ -19,18 +19,29 @@ const CreatePoll = () => {
     }
   }, [userToken, history]);
 
-  const handleSubmit = useCallback(async (question, options, deadline) => {
-    // axios
-    //   .post(process.env.REACT_APP_BACKEND_URL + "create_question", {
-    //     question_text: question,
-    //     choices: options,
-    //     deadline: deadline
-    //   })
-    await new Promise((r) => setTimeout(r, 2000));
-    if (true) {
-      setPostCreated("1");
-    }
-  }, []);
+  const handleSubmit = useCallback(
+    async (question, options, deadline) => {
+      let res;
+      try {
+        res = await axios.post(
+          process.env.REACT_APP_BACKEND_URL + "create_question",
+          {
+            question_text: question,
+            choices: options,
+            deadline: deadline.toISOString(),
+          },
+          { headers: { Authorization: `Bearer ${userToken}` } }
+        );
+      } catch (error) {
+        return JSON.stringify(error.response.data);
+      }
+
+      if (res?.data) {
+        setPostCreated(`${res.data.question_id}`);
+      }
+    },
+    [userToken]
+  );
 
   return (
     <div className="d-flex justify-content-center align-items-center" style={{ padding: "20px" }}>

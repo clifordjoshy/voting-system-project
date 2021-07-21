@@ -18,7 +18,7 @@ const PostForm = ({ submitData }) => {
       setErrors({ ...errors, optionCount: false });
       setOptions(options.concat(""));
     },
-    [options, setOptions, errors, setErrors]
+    [options, errors]
   );
 
   const updateOption = useCallback(
@@ -27,7 +27,7 @@ const PostForm = ({ submitData }) => {
       optionsNew[index] = newVal;
       setOptions(optionsNew);
     },
-    [options, setOptions]
+    [options]
   );
 
   const removeOption = useCallback(
@@ -39,24 +39,27 @@ const PostForm = ({ submitData }) => {
       //reset option errors
       setErrors({ ...errors, options: [] });
     },
-    [options, setOptions, errors, setErrors]
+    [options, errors]
   );
 
   const handleSubmit = useCallback(() => {
     const errorsNew = {
       question: !question.length,
       options: options.map((o) => !o.length),
-      deadline: !deadline.length,
+      deadline: !deadline.length || new Date(deadline) < new Date(),
       optionCount: options.length < 2,
     };
+    setErrors(errorsNew);
 
-    if (errorsNew.question || errorsNew.deadline || errorsNew.options.includes(true)) {
-      setErrors(errorsNew);
+    if (errorsNew.question || errorsNew.deadline || errorsNew.optionCount || errorsNew.options.includes(true)) {
       return;
     }
 
     setLoading(true);
-    submitData(question, options, deadline).then(() => {
+    submitData(question, options, new Date(deadline)).then((error) => {
+      if (error) {
+        setErrors({ request: error });
+      }
       setLoading(false);
     });
   }, [question, options, deadline, submitData]);
@@ -99,12 +102,13 @@ const PostForm = ({ submitData }) => {
           <Button variant="outline-info" className="w-100" onClick={createOption}>
             Add New Option
           </Button>
-          {errors.optionCount && <div class="alert alert-danger">Please add atleast two options</div>}
+          {errors.optionCount && <div className="alert alert-danger">Please add atleast two options</div>}
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Enter deadline</Form.Label>
           <Form.Control type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} isInvalid={errors.deadline} />
         </Form.Group>
+        <div>{errors.request}</div>
         <div className="d-flex justify-content-end align-items-center">
           {loading && <Spinner animation="border" className="me-3" />}
           <Button variant="primary" onClick={handleSubmit}>
