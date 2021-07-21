@@ -60,10 +60,12 @@ def index():
     return jsonify({"all_questions":polls})
 
 @app.route("/questions", methods=['GET'])
+@jwt_required
 def user_questions():
     user = Users.query.filter_by(username=get_jwt_identity()).first().user_id
     polls = Question.query.filter_by(question_author=user)
-    return jsonify({"user's questions":polls})
+    polls = questions_schema(polls)
+    return jsonify({"questions":polls})
 
 @app.route("/create_question", methods=['POST'])
 @jwt_required()
