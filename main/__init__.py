@@ -17,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{basedir}/dev.db"
 
 # sqlalchemy instance
 db = SQLAlchemy(app)
+db.drop_all()
 db.create_all()
 ma = Marshmallow(app)
 
