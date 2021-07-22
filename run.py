@@ -9,6 +9,8 @@ from main import *
 from models import (Choice, Question, Users, choices_schema, question_schema,
                     questions_schema, users_schema, choices_admin_schema)
 
+from main import db
+db.create_all()
 
 @app.route('/register', methods=['POST'])
 def user_register():
