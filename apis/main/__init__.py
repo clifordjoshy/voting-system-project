@@ -17,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{basedir}/dev.db"
 
 # sqlalchemy instance
 db = SQLAlchemy(app)
+db.create_all()
 ma = Marshmallow(app)
 
 app.config["JWT_SECRET_KEY"] = "super-super-secret"
