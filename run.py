@@ -138,8 +138,6 @@ def question(id):
         choices = Choice.query.filter_by(question=id).all()
         ques = question_schema.dump(ques)
         choices = choices_schema.dump(choices)
-        print(ques)
-        print(choices)
         return jsonify({"question":ques, "choices":choices})
 
 #post:update, get:vote count
@@ -160,7 +158,6 @@ def question_admin(id):
                 db.session.add(choice)
                 db.session.commit()
             for choice in choices_update:
-                print(choice)
                 choice_entry = Choice.query.filter_by(choice_id=choice['choice_id']).first()
                 choice_entry.choice_text = choice['choice_text']
                 db.session.commit()
@@ -170,8 +167,6 @@ def question_admin(id):
             choices = Choice.query.filter_by(question=id).all()
             ques = question_schema.dump(ques)
             choices = choices_admin_schema.dump(choices)
-            print(ques)
-            print(choices)
             return jsonify({"question":ques, "choices":choices})
     else:
         return jsonify({"msg":"This question was posted by a different user."})
