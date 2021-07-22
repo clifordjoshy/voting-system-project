@@ -26,3 +26,5 @@ Werkzeug == 2.0.1
 
 # voting-system-project/main/__init__.py: 3
 flask_marshmallow == 0.14.0
+
+gunicorn == 20.0.4
