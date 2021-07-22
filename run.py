@@ -121,6 +121,9 @@ def delete_choice(id):
 @app.route("/<id>", methods=['POST','GET'])
 @cross_origin()
 def question(id):
+    ques = Question.query.filter_by(question_id=id).first()
+    if ques.deadline < datetime.now():
+        return jsonify({"msg":"Deadline has passed."})
     if request.method == 'POST':
         voted_choice = request.json['choice_id']
         choice = Choice.query.filter_by(choice_id=voted_choice).first()
