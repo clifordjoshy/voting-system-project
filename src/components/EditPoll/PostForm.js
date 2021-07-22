@@ -64,7 +64,7 @@ const PostForm = ({ submitData, questionData }) => {
     }
 
     setLoading(true);
-    submitData(question, deadline, preOptions, addedOptions).then((err) => {
+    submitData(question, new Date(deadline), preOptions, addedOptions).then((err) => {
       if (err) {
         setErrors({ request: err });
         setLoading(false);

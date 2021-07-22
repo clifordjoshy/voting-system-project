@@ -33,8 +33,10 @@ const ViewPollUser = () => {
   let cardBody;
   if (!questionData) {
     cardBody = <Spinner animation="border" />;
-  } else if (!questionData.question.question_id) {
+  } else if (!questionData.question) {
     cardBody = <Card.Title>This question does not exist :(</Card.Title>;
+  } else if (new Date(questionData.question.deadline) < new Date()) {
+    cardBody = <Card.Title>This question's deadline has elapsed :(</Card.Title>;
   } else if (answered) {
     cardBody = <Card.Title>Your response has been recorded.</Card.Title>;
   } else {

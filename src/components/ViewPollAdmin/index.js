@@ -21,7 +21,8 @@ const ViewPollAdmin = () => {
 
     axios
       .get(process.env.REACT_APP_BACKEND_URL + pollId + "/admin", { headers: { Authorization: `Bearer ${userToken}` } })
-      .then((res) => setQuestionData(res.data));
+      .then((res) => setQuestionData(res.data))
+      .catch(() => history.push("/admin/polls"));
   }, [userToken, pollId, history]);
 
   return (

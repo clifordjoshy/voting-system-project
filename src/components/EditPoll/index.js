@@ -21,7 +21,10 @@ const EditPoll = () => {
       history.push("/");
     }
 
-    axios.get(process.env.REACT_APP_BACKEND_URL + pollId).then((res) => setQuestionData(res.data));
+    axios
+      .get(process.env.REACT_APP_BACKEND_URL + pollId + "/admin", { headers: { Authorization: `Bearer ${userToken}` } })
+      .then((res) => setQuestionData(res.data))
+      .catch(() => history.push("/admin/polls"));
   }, [pollId, history, userToken]);
 
   const [postEdited, setPostEdited] = useState(false);
@@ -30,7 +33,7 @@ const EditPoll = () => {
     async (question, deadline, preOptions, addedOptions) => {
       const body = {
         question_text: question,
-        deadline: new Date(deadline).toISOString(),
+        deadline: deadline.toISOString(),
         choices_created: addedOptions.map((opt) => ({ choice_text: opt })),
         choices_edited: preOptions,
       };
