@@ -21,25 +21,35 @@ const EditPoll = () => {
       history.push("/");
     }
 
-    axios
-      .get(process.env.REACT_APP_BACKEND_URL + pollId + "/admin", { headers: { Authorization: `Bearer ${userToken}` } })
-      .then((res) => setQuestionData(res.data));
-  }, [userToken, pollId, history]);
+    axios.get(process.env.REACT_APP_BACKEND_URL + pollId).then((res) => setQuestionData(res.data));
+  }, [pollId, history, userToken]);
 
   const [postEdited, setPostEdited] = useState(false);
 
-  const handleSubmit = useCallback(async (question, options, deadline) => {
-    // axios
-    //   .post(process.env.REACT_APP_BACKEND_URL + "create_question", {
-    //     question_text: question,
-    //     choices: options,
-    //     deadline: deadline
-    //   })
-    await new Promise((r) => setTimeout(r, 2000));
-    if (true) {
-      setPostEdited(true);
-    }
-  }, []);
+  const handleSubmit = useCallback(
+    async (question, deadline, preOptions, addedOptions) => {
+      const body = {
+        question_text: question,
+        deadline: new Date(deadline).toISOString(),
+        choices_created: addedOptions.map((opt) => ({ choice_text: opt })),
+        choices_edited: preOptions,
+      };
+
+      console.log(body);
+
+      let res;
+      try {
+        res = await axios.post(process.env.REACT_APP_BACKEND_URL + pollId + "/admin", body, { headers: { Authorization: `Bearer ${userToken}` } });
+      } catch (error) {
+        return JSON.stringify(error.response?.data || "request failed");
+      }
+
+      if (res?.data) {
+        setPostEdited(true);
+      }
+    },
+    [pollId, userToken]
+  );
 
   let body;
   if (!questionData) {
@@ -49,7 +59,7 @@ const EditPoll = () => {
       </Card>
     );
   } else if (postEdited) {
-    body = <PostEdited pollId={postEdited} />;
+    body = <PostEdited pollId={pollId} />;
   } else {
     body = <PostForm submitData={handleSubmit} questionData={questionData} />;
   }

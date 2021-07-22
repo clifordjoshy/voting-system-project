@@ -5,65 +5,74 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
 const PostForm = ({ submitData, questionData }) => {
-  const [question, setQuestion] = useState(questionData.question);
-  const [options, setOptions] = useState(questionData.choices);
-  const [deadline, setDeadline] = useState(questionData.deadline);
+  const [question, setQuestion] = useState(questionData.question.question_text);
+  const [preOptions, setPreOptions] = useState(questionData.choices);
+  const [addedOptions, setAddedOptions] = useState([]);
+  const [deadline, setDeadline] = useState(questionData.question.deadline);
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const createOption = useCallback(
-    (index, newVal) => {
-      //reset option errors
-      setErrors({ ...errors, optionCount: false });
-      setOptions(options.concat(""));
-    },
-    [options, setOptions, errors, setErrors]
-  );
+  const createOption = useCallback(() => {
+    //reset option errors
+    setAddedOptions(addedOptions.concat(""));
+  }, [addedOptions]);
 
   const updateOption = useCallback(
-    (index, newVal) => {
-      const optionsNew = [...options];
-      optionsNew[index] = newVal;
-      setOptions(optionsNew);
+    (index, newVal, isNewOption) => {
+      if (isNewOption) {
+        const optionsNew = [...addedOptions];
+        optionsNew[index] = newVal;
+        setAddedOptions(optionsNew);
+      } else {
+        const optionsNew = [...preOptions];
+        optionsNew[index].choice_text = newVal;
+        setPreOptions(optionsNew);
+      }
     },
-    [options, setOptions]
+    [addedOptions, preOptions]
   );
 
   const removeOption = useCallback(
     (index) => {
-      const optionsNew = [...options];
+      const optionsNew = [...addedOptions];
       optionsNew.splice(index, 1);
-      setOptions(optionsNew);
+
+      setAddedOptions(optionsNew);
 
       //reset option errors
-      setErrors({ ...errors, options: [] });
+      setErrors({ ...errors, options: { ...errors.options, added: [] } });
     },
-    [options, setOptions, errors, setErrors]
+    [addedOptions, errors]
   );
 
   const handleSubmit = useCallback(() => {
     const errorsNew = {
       question: !question.length,
-      options: options.map((o) => !o.length),
-      deadline: !deadline.length,
-      optionCount: options.length < 2,
+      options: {
+        pre: preOptions.map(({ choice_text }) => !choice_text.length),
+        added: addedOptions.map((o) => !o.length),
+      },
+      deadline: !deadline.length || new Date(deadline) < new Date(),
     };
 
-    if (errorsNew.question || errorsNew.deadline || errorsNew.options.includes(true)) {
-      setErrors(errorsNew);
+    setErrors(errorsNew);
+    if (errorsNew.question || errorsNew.deadline || errorsNew.options.pre.includes(true) || errorsNew.options.added.includes(true)) {
       return;
     }
 
     setLoading(true);
-    submitData(question, options, deadline).then(() => {
-      setLoading(false);
+    submitData(question, deadline, preOptions, addedOptions).then((err) => {
+      if (err) {
+        setErrors({ request: err });
+        setLoading(false);
+      }
     });
-  }, [question, options, deadline, submitData]);
+  }, [question, preOptions, addedOptions, deadline, submitData]);
 
   return (
     <Card body className="p-2" style={{ minWidth: "50%" }}>
-      <Card.Title>Create a Question</Card.Title>
+      <Card.Title>Edit Question</Card.Title>
       <Form>
         <Form.Group className="mb-3">
           <Form.Label>Enter your question</Form.Label>
@@ -77,16 +86,29 @@ const PostForm = ({ submitData, questionData }) => {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Add your options</Form.Label>
-          {options.map((opt, i) => {
+          {preOptions.map(({ choice_text: opt }, i) => {
             return (
-              <div key={i} className="d-flex align-items-center mb-2 ">
+              <div key={`pre ${i}`} className="d-flex align-items-center mb-2 ">
                 <Form.Control
                   placeholder="Option here."
                   value={opt}
-                  onChange={(e) => updateOption(i, e.target.value)}
-                  isInvalid={errors.options?.[i]}
+                  onChange={(e) => updateOption(i, e.target.value, false)}
+                  isInvalid={errors.options?.pre?.[i]}
+                />
+              </div>
+            );
+          })}
+          {addedOptions.map((opt, i) => {
+            return (
+              <div key={`added ${i}`} className="d-flex align-items-center mb-2 ">
+                <Form.Control
+                  placeholder="Option here."
+                  value={opt}
+                  onChange={(e) => updateOption(i, e.target.value, true)}
+                  isInvalid={errors.options?.added?.[i]}
                 />
                 <button
+                  tabIndex="-1"
                   className="btn-close ms-2"
                   onClick={(e) => {
                     e.preventDefault();
@@ -99,16 +121,16 @@ const PostForm = ({ submitData, questionData }) => {
           <Button variant="outline-info" className="w-100" onClick={createOption}>
             Add New Option
           </Button>
-          {errors.optionCount && <div class="alert alert-danger">Please add atleast two options</div>}
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Enter deadline</Form.Label>
           <Form.Control type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} isInvalid={errors.deadline} />
         </Form.Group>
+        <div>{errors.request}</div>
         <div className="d-flex justify-content-end align-items-center">
           {loading && <Spinner animation="border" className="me-3" />}
           <Button variant="primary" onClick={handleSubmit}>
-            Create
+            Save
           </Button>
         </div>
       </Form>
