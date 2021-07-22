@@ -5,7 +5,6 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import os
 import datetime
-from sqlalchemy import create_engine
 
 basedir = os.getcwd()
 
