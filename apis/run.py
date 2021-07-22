@@ -133,13 +133,18 @@ def question_admin(id):
     if ques.question_author == Users.query.filter_by(username=get_jwt_identity()).first().user_id:
         if request.method == 'POST':
             ques.question_text = request.json['question_text']
-            ques.question_author = request.json['question_author']
-            ques.deadline = request.json['deadline']
-            choices = request.json['choices']
+            # ques.deadline = request.json['deadline']
+            choices_add = request.json['choices_created']
+            choices_update = request.json['choices_edited']
             db.session.commit()
-            for choice_text in choices:
-                choice = Choice(choice_text, ques.question_id)
+            for choice in choices_add:
+                choice = Choice(choice['choice_text'], ques.question_id)
                 db.session.add(choice)
+                db.session.commit()
+            for choice in choices_update:
+                print(choice)
+                choice_entry = Choice.query.filter_by(choice_id=choice['choice_id']).first()
+                choice_entry.choice_text = choice['choice_text']
                 db.session.commit()
             return jsonify({"msg":"updated"})
 
