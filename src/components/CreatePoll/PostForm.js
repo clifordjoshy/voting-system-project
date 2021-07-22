@@ -90,6 +90,7 @@ const PostForm = ({ submitData }) => {
                   isInvalid={errors.options?.[i]}
                 />
                 <button
+                  tabIndex="-1"
                   className="btn-close ms-2"
                   onClick={(e) => {
                     e.preventDefault();
