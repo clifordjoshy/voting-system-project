@@ -124,7 +124,7 @@ def question(id):
     ques = Question.query.filter_by(question_id=id).first()
     if ques is None:
         return jsonify({"msg":"Question does not exist."})
-    if ques.deadline < datetime.now():
+    if ques.deadline < datetime.datetime.now():
         return jsonify({"msg":"Deadline has passed."})
     if request.method == 'POST':
         voted_choice = request.json['choice_id']
