@@ -5,6 +5,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import os
 import datetime
+from sqlalchemy_utils.functions import database_exists
 
 basedir = os.getcwd()
 
@@ -17,7 +18,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{basedir}/dev.db"
 
 # sqlalchemy instance
 db = SQLAlchemy(app)
-db.create_all()
+if not database_exists(app.config["SQLALCHEMY_DATABASE_URI"]):
+    db.create_all()
 ma = Marshmallow(app)
 
 app.config["JWT_SECRET_KEY"] = "super-super-secret"
