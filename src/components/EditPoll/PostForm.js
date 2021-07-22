@@ -10,7 +10,11 @@ const PostForm = ({ submitData, questionData }) => {
   const [question, setQuestion] = useState(questionData.question.question_text);
   const [preOptions, setPreOptions] = useState(questionData.choices);
   const [addedOptions, setAddedOptions] = useState([]);
-  const [deadline, setDeadline] = useState(questionData.question.deadline);
+  const [deadline, setDeadline] = useState(
+    new Date(new Date(questionData.question.deadline + "Z").getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1)
+  );
+  //what sins have i commited in my past life. why must you be like this js.
+  //converts zero offset iso string to local time iso string
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});

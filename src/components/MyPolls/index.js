@@ -31,7 +31,7 @@ const MyPolls = () => {
               <QuestionCard
                 key={question_id}
                 question={question_text}
-                deadline={new Date(deadline)}
+                deadline={new Date(deadline + "Z")}
                 onClick={() => history.push(`/admin/polls/${question_id}`)}
               />
             );
