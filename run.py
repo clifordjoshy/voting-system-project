@@ -122,11 +122,12 @@ def delete_choice(id):
 @cross_origin()
 def question(id):
     ques = Question.query.filter_by(question_id=id).first()
-    # if ques is None:
-    #     return jsonify({"msg":"Question does not exist."})
-    # if ques.deadline < datetime.datetime.now():
-    #     return jsonify({"msg":"Deadline has passed."})
+    if ques is None:
+        return jsonify({"msg":"Question does not exist."})
     if request.method == 'POST':
+        if ques.deadline < datetime.datetime.now():
+            ques = question_schema.dump(ques)
+            return jsonify({"question":ques, "msg":"Deadline has passed."})
         voted_choice = request.json['choice_id']
         choice = Choice.query.filter_by(choice_id=voted_choice).first()
         choice.votes = choice.votes + 1
