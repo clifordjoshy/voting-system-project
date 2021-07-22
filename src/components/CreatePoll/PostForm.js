@@ -59,8 +59,8 @@ const PostForm = ({ submitData }) => {
     submitData(question, options, new Date(deadline)).then((error) => {
       if (error) {
         setErrors({ request: error });
+        setLoading(false);
       }
-      setLoading(false);
     });
   }, [question, options, deadline, submitData]);
 
