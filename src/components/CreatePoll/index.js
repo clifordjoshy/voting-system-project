@@ -33,7 +33,7 @@ const CreatePoll = () => {
           { headers: { Authorization: `Bearer ${userToken}` } }
         );
       } catch (error) {
-        return JSON.stringify(error.response.data);
+        return JSON.stringify(error.response?.data || "request failed");
       }
 
       if (res?.data) {
