@@ -43,7 +43,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Deployment
 
-The frontend has been deployed to Netlify and can be found [here](https://flamboyant-yonath-3fcba9.netlify.app/)
+The frontend has been deployed to Netlify and can be found [here](https://votey.netlify.app/)
 
 ## Routes
 
