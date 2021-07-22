@@ -9,10 +9,13 @@ from main import *
 from models import (Choice, Question, Users, choices_schema, question_schema,
                     questions_schema, users_schema, choices_admin_schema)
 
+from flask_cors import cross_origin
+
 from main import db
 db.create_all()
 
 @app.route('/register', methods=['POST'])
+@cross_origin()
 def user_register():
     try:
         username = request.json['username']
@@ -43,6 +46,7 @@ def user_register():
         return jsonify({ "message" : "Username or email already exists" })
 
 @app.route("/login", methods=["POST"])
+@cross_origin()
 def user_login():
     try:
         username = request.json['username']
@@ -59,12 +63,14 @@ def user_login():
         return jsonify({"message": "Incorrect username or password"})
 
 @app.route("/all_questions", methods=['GET'])
+@cross_origin()
 def index():
     polls = Question.query.all()
     polls = questions_schema.dump(polls)
     return jsonify({"all_questions":polls})
 
 @app.route("/questions", methods=['GET'])
+@cross_origin()
 @jwt_required()
 def user_questions():
     user = Users.query.filter_by(username=get_jwt_identity()).first().user_id
@@ -73,6 +79,7 @@ def user_questions():
     return jsonify({"questions":polls})
 
 @app.route("/create_question", methods=['POST'])
+@cross_origin()
 @jwt_required()
 def create_question():
     question_text = request.json['question_text']
@@ -90,6 +97,7 @@ def create_question():
     return jsonify({"question_id":f"{ques.question_id}"})
 
 @app.route("/<id>/add_choice", methods=['POST'])
+@cross_origin()
 @jwt_required(id)
 def add_choice(id):
     choice_text = request.json['choice_text']
@@ -100,6 +108,7 @@ def add_choice(id):
     return jsonify({"choice_id":f"{choice.choice_id}"})
 
 @app.route("/<id>/delete_choice", methods=['POST'])
+@cross_origin()
 @jwt_required(id)
 def delete_choice(id):   
     choice_id = request.json['choice_id']
@@ -110,6 +119,7 @@ def delete_choice(id):
 
 #post:vote, get:info
 @app.route("/<id>", methods=['POST','GET'])
+@cross_origin()
 def question(id):
     if request.method == 'POST':
         voted_choice = request.json['choice_id']
@@ -129,6 +139,7 @@ def question(id):
 
 #post:update, get:vote count
 @app.route("/<id>/admin", methods=['POST', 'GET'])
+@cross_origin()
 @jwt_required()
 def question_admin(id):
     ques = Question.query.filter_by(question_id=id).first()
