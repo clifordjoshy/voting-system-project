@@ -146,7 +146,7 @@ def question_admin(id):
     if ques.question_author == Users.query.filter_by(username=get_jwt_identity()).first().user_id:
         if request.method == 'POST':
             ques.question_text = request.json['question_text']
-            # ques.deadline = request.json['deadline']
+            ques.deadline = request.json['deadline']
             choices_add = request.json['choices_created']
             choices_update = request.json['choices_edited']
             db.session.commit()
