@@ -3,6 +3,8 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const PostForm = ({ submitData }) => {
   const [question, setQuestion] = useState("");
@@ -105,10 +107,31 @@ const PostForm = ({ submitData }) => {
           </Button>
           {errors.optionCount && <div className="alert alert-danger">Please add atleast two options</div>}
         </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Enter deadline</Form.Label>
-          <Form.Control type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} isInvalid={errors.deadline} />
-        </Form.Group>
+        <Row className="g-2 mb-3">
+          <Col md>
+            <Form.Group>
+              <Form.Label>Enter deadline date</Form.Label>
+              <Form.Control
+                type="date"
+                value={deadline.slice(0, 10)}
+                onChange={(e) => setDeadline(e.target.value + "T" + deadline.slice(10))}
+                isInvalid={errors.deadline}
+              />
+            </Form.Group>
+          </Col>
+          <Col md>
+            <Form.Group>
+              <Form.Label>Enter deadline time</Form.Label>
+              <Form.Control
+                type="time"
+                value={deadline.slice(11)}
+                onChange={(e) => setDeadline(deadline.slice(0, 10) + "T" + e.target.value)}
+                isInvalid={errors.deadline}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
         <div>{errors.request}</div>
         <div className="d-flex justify-content-end align-items-center">
           {loading && <Spinner animation="border" className="me-3" />}

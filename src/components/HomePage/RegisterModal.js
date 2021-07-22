@@ -17,7 +17,8 @@ const RegisterModal = ({ show, onHide }) => {
 
   const handleRegister = useCallback(() => {
     const errorsNew = {};
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!re.test(email.toLowerCase())) {
       errorsNew.email = true;
     }
@@ -61,19 +62,40 @@ const RegisterModal = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Group className="mb-3">
             <Form.Label>Email address</Form.Label>
-            <Form.Control required type="email" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)} value={email} isInvalid={errors.email} />
+            <Form.Control
+              required
+              type="email"
+              placeholder="Enter email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              isInvalid={errors.email}
+            />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
-            <Form.Control required type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} isInvalid={errors.password} />
+            <Form.Control
+              required
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              isInvalid={errors.password}
+            />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Group className="mb-3">
             <Form.Label>Confirm Password</Form.Label>
-            <Form.Control required type="password" placeholder="Password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} isInvalid={errors.confirmPassword} />
+            <Form.Control
+              required
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={confirmPassword}
+              isInvalid={errors.confirmPassword}
+            />
           </Form.Group>
           {errors.register && <div class="alert alert-danger">User already exists</div>}
         </Form>
