@@ -84,7 +84,7 @@ def user_questions():
 def create_question():
     question_text = request.json['question_text']
     question_author = Users.query.filter_by(username=get_jwt_identity()).first().user_id
-    deadline = datetime.datetime.strptime(request.json['deadline'], '%Y-%m-%dT%H:%M:%S.%fZ')
+    deadline = datetime.datetime.strptime(request.json['deadline'], '%Y-%m-%dT%H:%M:%S.%f')
     choices = request.json['choices']
     
     ques = Question(question_text, question_author, deadline)
@@ -150,7 +150,7 @@ def question_admin(id):
     if ques.question_author == Users.query.filter_by(username=get_jwt_identity()).first().user_id:
         if request.method == 'POST':
             ques.question_text = request.json['question_text']
-            deadline = datetime.datetime.strptime(request.json['deadline'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            deadline = datetime.datetime.strptime(request.json['deadline'], '%Y-%m-%dT%H:%M:%S.%f')
             choices_add = request.json['choices_created']
             choices_update = request.json['choices_edited']
             db.session.commit()
