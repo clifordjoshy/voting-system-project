@@ -24,9 +24,9 @@ This is a voting system project made for the Genskill Fullstack Web Development 
 
 ## Structure
 
-The frontend code was developed by [@clifordjoshy](https://github.com/clifordjoshy) and can be found in the [frontend](https://github.com/clifordjoshy/voting-system-project/tree/frontend)) branch.
+The frontend code was developed by [@clifordjoshy](https://github.com/clifordjoshy) and can be found in the [frontend](https://github.com/clifordjoshy/voting-system-project/tree/frontend) branch.
 
-The backend code was developed by [@novumvita](https://github.com/novumvita) and can be found in the current [(backend)](https://github.com/clifordjoshy/voting-system-project/tree/backend) branch.
+The backend code was developed by [@novumvita](https://github.com/novumvita) and can be found in the current ([backend](https://github.com/clifordjoshy/voting-system-project/tree/backend)) branch.
 
 ## Implementation Details
 
