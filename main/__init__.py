@@ -15,7 +15,7 @@ CORS(app)
 
 # config
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///votingsystem"
+# app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///votingsystem"
 
 # sqlalchemy instance
 db = SQLAlchemy(app)
