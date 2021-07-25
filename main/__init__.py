@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import os
 import datetime
-from sqlalchemy_utils.functions import database_exists
+# from sqlalchemy_utils.functions import database_exists
 
 basedir = os.getcwd()
 
@@ -14,7 +14,7 @@ CORS(app)
 
 # config
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{basedir}/dev.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///votingsystem"
 
 # sqlalchemy instance
 db = SQLAlchemy(app)
