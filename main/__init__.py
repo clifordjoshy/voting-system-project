@@ -15,7 +15,7 @@ CORS(app)
 
 # config
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 # sqlalchemy instance
 db = SQLAlchemy(app)
